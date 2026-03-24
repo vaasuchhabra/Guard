@@ -31,7 +31,7 @@
     /* System */
     --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     --ease: cubic-bezier(0.16, 1, 0.3, 1);
-    --spring: cubic-bezier(0.175, 0.885, 0.32, 1.15);
+    --lux-ease: cubic-bezier(0.22, 1, 0.36, 1);
     --smooth: cubic-bezier(0.25, 1, 0.5, 1);
     --radius: 32px;
     --radius-lg: 40px;
@@ -103,9 +103,8 @@ h1, h2, h3, h4 { line-height: 1.1; letter-spacing: -0.03em; }
     font-family: var(--font); font-size: 1rem; font-weight: 700;
     cursor: pointer; border: none; transition: all 0.25s var(--ease);
 }
-.btn-dark { background: var(--dark); color: #fff; }
-.btn-dark { transition: transform 0.4s var(--spring), background 0.3s, box-shadow 0.4s var(--spring); }
-.btn-dark:hover { background: var(--dark-soft); transform: translateY(-4px) scale(1.02); box-shadow: 0 16px 32px rgba(15,27,45,0.2); }
+.btn-dark { background: var(--dark); color: #fff; transition: transform 0.8s var(--lux-ease), background 0.8s var(--lux-ease), box-shadow 0.8s var(--lux-ease); }
+.btn-dark:hover { background: var(--dark-soft); transform: translateY(-2px) scale(1.01); box-shadow: 0 20px 40px rgba(15,27,45,0.15); }
 .btn-ghost { background: transparent; color: var(--text); border: 2px solid rgba(15,27,45,0.15); }
 .btn-ghost:hover { border-color: var(--text); }
 .btn-full { width: 100%; justify-content: center; }
@@ -386,11 +385,11 @@ textarea { resize: vertical; min-height: 72px; }
 
 
 .bento-card, .trust-card, .step-card, .vision-big-card, .beta-card {
-    transition: transform 0.6s var(--spring), box-shadow 0.6s var(--spring) !important;
+    transition: transform 0.8s var(--lux-ease), box-shadow 0.8s var(--lux-ease) !important;
 }
 .bento-card:hover, .trust-card:hover, .step-card:hover {
-    transform: translateY(-8px) scale(1.02) !important;
-    box-shadow: 0 24px 48px rgba(15,27,45,0.08) !important;
+    transform: translateY(-4px) scale(1.01) !important;
+    box-shadow: 0 40px 80px rgba(15,27,45,0.06) !important;
 }
 
 /* Nav dynamic blur */
@@ -415,14 +414,14 @@ body.scrolled .nav { background: rgba(253,251,247,0.9); backdrop-filter: blur(20
 /* === FRAMER STYLE REVEALS === */
 .reveal, .reveal-blur, .reveal-scale, .reveal-left, .reveal-right {
     opacity: 0;
-    transition: all 1s var(--smooth);
+    transition: opacity 1.4s var(--lux-ease), transform 1.4s var(--lux-ease), filter 1.4s var(--lux-ease);
     will-change: opacity, transform, filter;
 }
-.reveal { transform: translateY(40px); }
-.reveal-blur { transform: translateY(30px); filter: blur(12px); }
-.reveal-scale { transform: scale(0.92) translateY(20px); filter: blur(6px); transition: all 1.2s var(--spring); }
-.reveal-left { transform: translateX(-40px); }
-.reveal-right { transform: translateX(40px); }
+.reveal { transform: translateY(60px); }
+.reveal-blur { transform: translateY(60px); filter: blur(16px); }
+.reveal-scale { transform: scale(0.96) translateY(40px); filter: blur(8px); }
+.reveal-left { transform: translateX(-50px); }
+.reveal-right { transform: translateX(50px); }
 
 .reveal.visible, .reveal-blur.visible, .reveal-scale.visible, .reveal-left.visible, .reveal-right.visible {
     opacity: 1;
