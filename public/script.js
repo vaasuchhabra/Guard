@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Live clear on input
-    ['parentName', 'email', 'phone', 'interest'].forEach(id => {
+    ['parentName', 'email', 'phone', 'interest', 'willingToPay'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.addEventListener('input', () => clearError(id));
     });
@@ -84,11 +84,12 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         let valid = true;
 
-        ['parentName', 'email', 'phone', 'interest'].forEach(clearError);
+        ['parentName', 'email', 'phone', 'interest', 'willingToPay'].forEach(clearError);
 
         const name = document.getElementById('parentName').value.trim();
         const email = document.getElementById('email').value.trim();
         const phone = document.getElementById('phone').value.trim();
+        const willingToPay = document.getElementById('willingToPay').value;
         const interest = document.getElementById('interest').value.trim();
 
         if (!name) { showError('parentName', 'Please enter your name'); valid = false; }
@@ -96,6 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
         else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showError('email', 'Please enter a valid email'); valid = false; }
         if (!phone) { showError('phone', 'Please enter your phone number'); valid = false; }
         else if (phone.replace(/[\s\-\+\(\)]/g, '').length < 8) { showError('phone', 'Please enter a valid phone number'); valid = false; }
+        if (!willingToPay) { showError('willingToPay', 'Please select an option'); valid = false; }
         if (!interest) { showError('interest', 'Please tell us why you\'re interested'); valid = false; }
 
         if (!valid) return;
@@ -110,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const res = await fetch('/api/signup', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, email, phone, interest })
+                body: JSON.stringify({ name, email, phone, willingToPay, interest })
             });
             const data = await res.json();
 
@@ -122,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 showError('email', data.message || 'This email is already registered');
             } else if (data.errors) {
                 Object.entries(data.errors).forEach(([field, msg]) => {
-                    const idMap = { name: 'parentName', email: 'email', phone: 'phone', interest: 'interest' };
+                    const idMap = { name: 'parentName', email: 'email', phone: 'phone', willingToPay: 'willingToPay', interest: 'interest' };
                     showError(idMap[field] || field, msg);
                 });
             }

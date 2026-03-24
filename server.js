@@ -49,7 +49,7 @@ async function writeToGoogleSheet(data) {
 
 // ─── API: Submit beta signup ───
 app.post('/api/signup', async (req, res) => {
-    const { name, email, phone, interest } = req.body;
+    const { name, email, phone, willingToPay, interest } = req.body;
 
     // Validation
     const errors = {};
@@ -58,6 +58,7 @@ app.post('/api/signup', async (req, res) => {
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.email = 'Invalid email';
     if (!phone || !phone.trim()) errors.phone = 'Phone is required';
     else if (phone.replace(/[\s\-\+\(\)]/g, '').length < 8) errors.phone = 'Invalid phone';
+    if (!willingToPay || !willingToPay.trim()) errors.willingToPay = 'Payment tier is required';
     if (!interest || !interest.trim()) errors.interest = 'Interest is required';
 
     if (Object.keys(errors).length > 0) {
@@ -76,6 +77,7 @@ app.post('/api/signup', async (req, res) => {
         name: name.trim(),
         email: email.trim().toLowerCase(),
         phone: phone.trim(),
+        willingToPay: willingToPay.trim(),
         interest: interest.trim(),
         submittedAt: new Date().toISOString(),
         status: 'pending'
@@ -123,9 +125,9 @@ app.patch('/api/submissions/:id', (req, res) => {
 // ─── API: Export as CSV ───
 app.get('/api/export', (req, res) => {
     const submissions = JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
-    const header = 'ID,Name,Email,Phone,Interest,Submitted At,Status\n';
+    const header = 'ID,Name,Email,Phone,Willing To Pay,Interest,Submitted At,Status\n';
     const csv = header + submissions.map(s =>
-        `"${s.id}","${s.name}","${s.email}","${s.phone}","${s.interest.replace(/"/g, '""')}","${s.submittedAt}","${s.status}"`
+        `"${s.id}","${s.name}","${s.email}","${s.phone}","${s.willingToPay || ''}","${s.interest.replace(/"/g, '""')}","${s.submittedAt}","${s.status}"`
     ).join('\n');
     res.setHeader('Content-Type', 'text/csv');
     res.setHeader('Content-Disposition', 'attachment; filename=beta-signups.csv');
