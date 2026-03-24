@@ -4,7 +4,6 @@
   "description": "GuardianSense Beta Signup Backend",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
     "dev": "node server.js"
   },
   "dependencies": {
