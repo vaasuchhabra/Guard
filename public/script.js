@@ -89,7 +89,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const name = document.getElementById('parentName').value.trim();
         const email = document.getElementById('email').value.trim();
         const phone = document.getElementById('phone').value.trim();
-        const willingToPay = document.getElementById('willingToPay').value;
+        const paidInput = document.querySelector('input[name="willingToPay"]:checked');
+        const willingToPay = paidInput ? paidInput.value : '';
         const interest = document.getElementById('interest').value.trim();
 
         if (!name) { showError('parentName', 'Please enter your name'); valid = false; }

@@ -307,6 +307,15 @@ textarea { resize: vertical; min-height: 72px; }
 .form-error { font-size: 0.72rem; color: #EF4444; margin-top: 3px; min-height: 14px; display: block; }
 .form-note { font-size: 0.75rem; color: var(--text-muted); text-align: center; margin-top: 12px; }
 
+/* Radio group */
+.radio-group { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+.radio-pill { display: flex; cursor: pointer; flex: 1; min-width: 25%; }
+.radio-pill input { display: none; }
+.radio-pill span { width: 100%; text-align: center; padding: 12px 10px; border-radius: 12px; font-size: 0.88rem; font-weight: 600; background: var(--bg); color: var(--text-secondary); border: 2px solid transparent; transition: all 0.2s var(--ease); }
+.radio-pill:hover span { background: #fff; }
+.radio-pill input:checked + span { background: #fff; border-color: var(--accent); color: var(--accent); }
+#willingToPay.error .radio-pill span { border-color: #EF4444; background: #FFF0F0; }
+
 /* === AUDIENCE === */
 .audience { padding: 80px 0 100px; }
 .audience-row { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
