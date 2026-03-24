@@ -23,7 +23,7 @@ if (!fs.existsSync(DATA_FILE)) {
 
 // Middleware
 app.use(express.json());
-app.use(express.static(__dirname));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Helper: write to Google Sheets
 async function writeToGoogleSheet(data) {
