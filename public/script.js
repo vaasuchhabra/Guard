@@ -6,18 +6,25 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     // --- Scroll Reveal ---
-    const revealElements = document.querySelectorAll('.reveal');
+    const revealElements = document.querySelectorAll('.reveal, .reveal-blur, .reveal-scale, .reveal-left, .reveal-right');
     const revealObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 const delay = entry.target.dataset.delay || 0;
-                setTimeout(() => entry.target.classList.add('visible'), delay * 120);
+                if (delay) entry.target.style.transitionDelay = `${delay * 100}ms`;
+                setTimeout(() => entry.target.classList.add('visible'), 10);
                 revealObserver.unobserve(entry.target);
             }
         });
-    }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
 
     revealElements.forEach(el => revealObserver.observe(el));
+
+    // Dynamic Nav Blur
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+        if(window.scrollY > 50) { document.body.classList.add('scrolled'); } else { document.body.classList.remove('scrolled'); }
+    });
 
     // --- Mobile Nav Toggle ---
     const navToggle = document.getElementById('navToggle');
