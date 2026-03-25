@@ -9,9 +9,8 @@ const DATA_FILE = IS_VERCEL
     ? path.join('/tmp', 'submissions.json') 
     : path.join(__dirname, 'data', 'submissions.json');
 
-// ─── Google Sheets Integration ───
-// After deploying the Apps Script, paste the Web App URL here:
-const GOOGLE_SCRIPT_URL = process.env.GOOGLE_SCRIPT_URL || 'https://script.google.com/macros/s/AKfycbwltvfrZi7VkUuAaomCVmcD0vZZPLQpF7ciqAdxc5Kr_CYZ4b7VDb364h-oqZ3gW7Ne5w/exec';
+// ─── Native Google Sheets SDK Integration ───
+const { writeToGoogleSheet } = require('./api/googleSheets');
 
 // Ensure data directory exists (only if not on Vercel)
 if (!IS_VERCEL && !fs.existsSync(path.join(__dirname, 'data'))) {
@@ -25,27 +24,7 @@ if (!fs.existsSync(DATA_FILE)) {
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Helper: write to Google Sheets
-async function writeToGoogleSheet(data) {
-    if (!GOOGLE_SCRIPT_URL) {
-        console.log('⚠️  GOOGLE_SCRIPT_URL not set — skipping Google Sheets write');
-        return null;
-    }
-    try {
-        const res = await fetch(GOOGLE_SCRIPT_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data),
-            redirect: 'follow'
-        });
-        const result = await res.json();
-        console.log('📊 Google Sheet:', result.success ? 'Written' : result.message);
-        return result;
-    } catch (err) {
-        console.error('📊 Google Sheet error:', err.message);
-        return null;
-    }
-}
+
 
 // ─── API: Submit beta signup ───
 app.post('/api/signup', async (req, res) => {
@@ -141,7 +120,7 @@ if (!IS_VERCEL) {
         console.log(`   Website:  http://localhost:${PORT}`);
         console.log(`   Admin:    http://localhost:${PORT}/admin.html`);
         console.log(`   API:      http://localhost:${PORT}/api/submissions`);
-        console.log(`   Sheets:   ${GOOGLE_SCRIPT_URL ? '✅ Connected' : '⚠️  Not configured (set GOOGLE_SCRIPT_URL)'}\n`);
+        console.log(`   Sheets:   Native SDK enabled (waiting for API payload)\n`);
     });
 }
 module.exports = app;
