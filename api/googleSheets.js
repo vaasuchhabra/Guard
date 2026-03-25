@@ -54,7 +54,7 @@ async function writeToGoogleSheet(submission) {
         // Append raw data blindly to Sheet1
         const response = await sheets.spreadsheets.values.append({
             spreadsheetId: SHEET_ID,
-            range: 'Sheet1!A:H', // Will intelligently drop onto the first completely blank row
+            range: 'A:H', // Will intelligently drop onto the first completely blank row of the active sheet
             valueInputOption: 'USER_ENTERED',
             resource,
         });
