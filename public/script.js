@@ -1,5 +1,5 @@
 /* =============================================
-   GuardianSense — Abode.space Inspired Design
+   Herefor.me — Abode.space Inspired Design
    JavaScript: Scroll Reveals, Form, Modal, Nav
    ============================================= */
 

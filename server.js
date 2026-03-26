@@ -116,7 +116,7 @@ app.get('/api/export', (req, res) => {
 // Start server locally or export for Vercel
 if (!IS_VERCEL) {
     app.listen(PORT, () => {
-        console.log(`\n🛡️  GuardianSense Backend Running`);
+        console.log(`\n💙  Herefor.me Backend Running`);
         console.log(`   Website:  http://localhost:${PORT}`);
         console.log(`   Admin:    http://localhost:${PORT}/admin.html`);
         console.log(`   API:      http://localhost:${PORT}/api/submissions`);

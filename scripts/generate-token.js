@@ -45,7 +45,7 @@ app.listen(PORT, () => {
         prompt: 'consent' // Force Google to return a fresh refresh_token
     });
     
-    console.log('\n--- 🔐 GuardianSense Google Sheets OAuth Token Generator ---');
+    console.log('\n--- 🔐 Herefor.me Google Sheets OAuth Token Generator ---');
     console.log('\n1. Please make sure your Google Cloud OAuth Client has this EXACT Authorized redirect URI:');
     console.log(`   ${REDIRECT_URI}`);
     console.log('\n2. Click the link below to authenticate your Google Account:');
