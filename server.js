@@ -71,22 +71,29 @@ app.post('/api/signup', async (req, res) => {
     submissions.push(submission);
     fs.writeFileSync(DATA_FILE, JSON.stringify(submissions, null, 2));
 
-    // Forward to Google Apps Script (handle Google's 302 redirect)
+    // Build async tasks (must await on Vercel — serverless functions terminate after res.json)
+    const tasks = [];
+
+    // Forward to Google Apps Script
     if (GOOGLE_SCRIPT_URL) {
-        fetch(GOOGLE_SCRIPT_URL, {
+        const sheetTask = fetch(GOOGLE_SCRIPT_URL, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'text/plain' },
             body: JSON.stringify(submission),
             redirect: 'follow'
         })
-        .then(r => console.log('📊 Google Script:', r.status, r.ok ? 'OK' : 'FAIL'))
+        .then(async r => {
+            const text = await r.text();
+            console.log('📊 Google Script:', r.status, r.ok ? 'OK' : 'FAIL', text.substring(0, 100));
+        })
         .catch(err => console.error('📊 Google Script Error:', err.message));
+        tasks.push(sheetTask);
     }
 
     // Send Telegram notification
     if (TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID) {
         const msg = `🆕 *New Herefor.me Signup!*\n\n👤 *Name:* ${submission.name}\n📧 *Email:* ${submission.email}\n📱 *Phone:* ${submission.phone}\n💰 *Willing to Pay:* ${submission.willingToPay}\n💬 *Interest:* ${submission.interest}\n🕐 *Time:* ${submission.submittedAt}`;
-        fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+        const tgTask = fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: msg, parse_mode: 'Markdown' })
@@ -94,7 +101,11 @@ app.post('/api/signup', async (req, res) => {
         .then(r => r.json())
         .then(d => console.log('📨 Telegram:', d.ok ? 'Sent!' : d.description))
         .catch(err => console.error('📨 Telegram Error:', err.message));
+        tasks.push(tgTask);
     }
+
+    // Wait for all external calls to complete before responding (critical for Vercel serverless)
+    await Promise.allSettled(tasks);
 
     console.log(`✅ New signup: ${submission.name} (${submission.email})`);
     res.json({ success: true, message: 'Application received!' });
