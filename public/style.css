@@ -15,12 +15,12 @@
     --card-cream: #F7F2EA;
 
     /* Accent colors */
-    --accent: #B8924A;
-    --accent-light: #D4AD5E;
+    --accent: #1B4077;
+    --accent-light: #FDFBF7;
     --accent-glow: rgba(184, 146, 74, 0.12);
 
     /* Navy for dark elements */
-    --dark: #497ed7;
+    --dark: #1e4bc2;
     --dark-soft: #3a6bc2;
 
     /* Text */
@@ -101,7 +101,7 @@ h4 {
     left: 0;
     right: 0;
     z-index: 100;
-    background: rgba(253, 251, 247, 0.85);
+    background: #fdfbf7d9;
     backdrop-filter: blur(20px);
     padding: 16px 0;
 }
