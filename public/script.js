@@ -122,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // 2. Also send directly to Google Apps Script (most reliable for Sheets)
             //    Maps our field names → what the deployed Apps Script expects
-            const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyH2rP85tbUjSER3dxOIQZYm4VGlmoIe8wjktQmq5vwWLdxU4Budm7j8RXTE-2dSdUc/exec';
+            const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbykQXN3kAU3c0XTkJNYPXD3I-B1y5bVgzglU9Axez4iFx08S7c_o7DPg8F39cGbQxiM/exec';
             const sheetData = { name, email, phone, budget: willingToPay, reason: interest };
             fetch(GOOGLE_SCRIPT_URL, {
                 method: 'POST',
