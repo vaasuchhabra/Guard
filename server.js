@@ -13,6 +13,10 @@ const DATA_FILE = IS_VERCEL
 // ─── Google Apps Script Integration ───
 const GOOGLE_SCRIPT_URL = process.env.GOOGLE_SCRIPT_URL;
 
+// ─── Telegram Bot Integration ───
+const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
+const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
+
 // Ensure data directory exists (only if not on Vercel)
 if (!IS_VERCEL && !fs.existsSync(path.join(__dirname, 'data'))) {
     fs.mkdirSync(path.join(__dirname, 'data'));
@@ -67,13 +71,29 @@ app.post('/api/signup', async (req, res) => {
     submissions.push(submission);
     fs.writeFileSync(DATA_FILE, JSON.stringify(submissions, null, 2));
 
-    // Forward to Google Apps Script (non-blocking)
+    // Forward to Google Apps Script (handle Google's 302 redirect)
     if (GOOGLE_SCRIPT_URL) {
         fetch(GOOGLE_SCRIPT_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(submission)
-        }).catch(err => console.error('📊 Google Script Error:', err.message));
+            body: JSON.stringify(submission),
+            redirect: 'follow'
+        })
+        .then(r => console.log('📊 Google Script:', r.status, r.ok ? 'OK' : 'FAIL'))
+        .catch(err => console.error('📊 Google Script Error:', err.message));
+    }
+
+    // Send Telegram notification
+    if (TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID) {
+        const msg = `🆕 *New Herefor.me Signup!*\n\n👤 *Name:* ${submission.name}\n📧 *Email:* ${submission.email}\n📱 *Phone:* ${submission.phone}\n💰 *Willing to Pay:* ${submission.willingToPay}\n💬 *Interest:* ${submission.interest}\n🕐 *Time:* ${submission.submittedAt}`;
+        fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: msg, parse_mode: 'Markdown' })
+        })
+        .then(r => r.json())
+        .then(d => console.log('📨 Telegram:', d.ok ? 'Sent!' : d.description))
+        .catch(err => console.error('📨 Telegram Error:', err.message));
     }
 
     console.log(`✅ New signup: ${submission.name} (${submission.email})`);
@@ -127,7 +147,8 @@ if (!IS_VERCEL) {
         console.log(`   Website:  http://localhost:${PORT}`);
         console.log(`   Admin:    http://localhost:${PORT}/admin.html`);
         console.log(`   API:      http://localhost:${PORT}/api/submissions`);
-        console.log(`   Sheets:   ${GOOGLE_SCRIPT_URL ? 'Linked via Web App' : 'Disabled'}\n`);
+        console.log(`   Sheets:   ${GOOGLE_SCRIPT_URL ? 'Linked via Web App' : 'Disabled'}`);
+        console.log(`   Telegram: ${TELEGRAM_BOT_TOKEN ? 'Enabled' : 'Disabled'}\n`);
     });
 }
 module.exports = app;

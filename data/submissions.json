@@ -82,5 +82,15 @@
     "interest": "Safety",
     "submittedAt": "2026-03-27T05:48:49.425Z",
     "status": "pending"
+  },
+  {
+    "id": "mn8hziqmp3s3d",
+    "name": "Integration Test",
+    "email": "integration-test-1774591543469@example.com",
+    "phone": "+91 9876543210",
+    "willingToPay": "Premium",
+    "interest": "Testing Google Sheets + Telegram integration",
+    "submittedAt": "2026-03-27T06:05:43.967Z",
+    "status": "pending"
   }
 ]
