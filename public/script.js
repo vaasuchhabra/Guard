@@ -109,13 +109,25 @@ document.addEventListener('DOMContentLoaded', () => {
         submitBtn.textContent = 'Submitting...';
         submitBtn.disabled = true;
 
+        const formData = { name, email, phone, willingToPay, interest };
+
         try {
+            // 1. Send to our backend (saves JSON + triggers Telegram)
             const res = await fetch('/api/signup', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, email, phone, willingToPay, interest })
+                body: JSON.stringify(formData)
             });
             const data = await res.json();
+
+            // 2. Also send directly to Google Apps Script (most reliable for Sheets)
+            const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyH2rP85tbUjSER3dxOIQZYm4VGlmoIe8wjktQmq5vwWLdxU4Budm7j8RXTE-2dSdUc/exec';
+            fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'text/plain' },
+                body: JSON.stringify(formData)
+            }).catch(() => {});
 
             if (data.success) {
                 modal.classList.add('active');
