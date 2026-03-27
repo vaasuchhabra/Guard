@@ -10,7 +10,7 @@ const DATA_FILE = IS_VERCEL
     : path.join(__dirname, 'data', 'submissions.json');
 
 // ─── Native Google Sheets SDK Integration ───
-const { writeToGoogleSheet } = require('./api/googleSheets');
+// Removed: const { writeToGoogleSheet } = require('./api/googleSheets');
 
 // Ensure data directory exists (only if not on Vercel)
 if (!IS_VERCEL && !fs.existsSync(path.join(__dirname, 'data'))) {
@@ -66,9 +66,6 @@ app.post('/api/signup', async (req, res) => {
     submissions.push(submission);
     fs.writeFileSync(DATA_FILE, JSON.stringify(submissions, null, 2));
 
-    // Write to Google Sheets (async, non-blocking)
-    writeToGoogleSheet(submission);
-
     console.log(`✅ New signup: ${submission.name} (${submission.email})`);
     res.json({ success: true, message: 'Application received!' });
 });
@@ -119,8 +116,7 @@ if (!IS_VERCEL) {
         console.log(`\n💙  Herefor.me Backend Running`);
         console.log(`   Website:  http://localhost:${PORT}`);
         console.log(`   Admin:    http://localhost:${PORT}/admin.html`);
-        console.log(`   API:      http://localhost:${PORT}/api/submissions`);
-        console.log(`   Sheets:   Native SDK enabled (waiting for API payload)\n`);
+        console.log(`   API:      http://localhost:${PORT}/api/submissions\n`);
     });
 }
 module.exports = app;
