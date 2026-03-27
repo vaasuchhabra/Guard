@@ -1,6 +1,7 @@
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
+require('dotenv').config();
 
 const app = express();
 const PORT = 8080;
@@ -9,8 +10,8 @@ const DATA_FILE = IS_VERCEL
     ? path.join('/tmp', 'submissions.json') 
     : path.join(__dirname, 'data', 'submissions.json');
 
-// ─── Native Google Sheets SDK Integration ───
-// Removed: const { writeToGoogleSheet } = require('./api/googleSheets');
+// ─── Google Apps Script Integration ───
+const GOOGLE_SCRIPT_URL = process.env.GOOGLE_SCRIPT_URL;
 
 // Ensure data directory exists (only if not on Vercel)
 if (!IS_VERCEL && !fs.existsSync(path.join(__dirname, 'data'))) {
@@ -66,6 +67,15 @@ app.post('/api/signup', async (req, res) => {
     submissions.push(submission);
     fs.writeFileSync(DATA_FILE, JSON.stringify(submissions, null, 2));
 
+    // Forward to Google Apps Script (non-blocking)
+    if (GOOGLE_SCRIPT_URL) {
+        fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(submission)
+        }).catch(err => console.error('📊 Google Script Error:', err.message));
+    }
+
     console.log(`✅ New signup: ${submission.name} (${submission.email})`);
     res.json({ success: true, message: 'Application received!' });
 });
@@ -116,7 +126,8 @@ if (!IS_VERCEL) {
         console.log(`\n💙  Herefor.me Backend Running`);
         console.log(`   Website:  http://localhost:${PORT}`);
         console.log(`   Admin:    http://localhost:${PORT}/admin.html`);
-        console.log(`   API:      http://localhost:${PORT}/api/submissions\n`);
+        console.log(`   API:      http://localhost:${PORT}/api/submissions`);
+        console.log(`   Sheets:   ${GOOGLE_SCRIPT_URL ? 'Linked via Web App' : 'Disabled'}\n`);
     });
 }
 module.exports = app;
