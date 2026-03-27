@@ -76,10 +76,12 @@ app.post('/api/signup', async (req, res) => {
 
     // Forward to Google Apps Script
     if (GOOGLE_SCRIPT_URL) {
+        // Map field names to what the deployed Apps Script expects
+        const sheetPayload = { name: submission.name, email: submission.email, phone: submission.phone, budget: submission.willingToPay, reason: submission.interest };
         const sheetTask = fetch(GOOGLE_SCRIPT_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'text/plain' },
-            body: JSON.stringify(submission),
+            body: JSON.stringify(sheetPayload),
             redirect: 'follow'
         })
         .then(async r => {
